@@ -67,12 +67,16 @@ const initialSettings: UserSettings = {
 const Settings = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [user, loadingUser] = useAuthState(auth);
+  // COMMENTED OUT: Firebase auth hook disabled for development
+  // const [user, loadingUser] = useAuthState(auth);
 
   // --- States for Settings ---
   const [settings, setSettings] = useState<UserSettings>(initialSettings);
-  const [isLoading, setIsLoading] = useState(true); // For loading settings
+  const [isLoading, setIsLoading] = useState(false); // Changed to false - no loading needed
 
+  // COMMENTED OUT: Firebase Firestore settings loading disabled for development
+  // Settings are now stored in localStorage only
+  /*
   // --- Load settings from Firestore ---
   useEffect(() => {
     const loadSettings = async () => {
@@ -121,9 +125,57 @@ const Settings = () => {
 
     loadSettings();
   }, [user, loadingUser, toast]);
+  */
 
-  // --- Generic handler to update state and save to Firestore ---
+  // BYPASSED: Load settings from localStorage instead
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('appSettings');
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings);
+        setSettings({ ...initialSettings, ...parsed });
+        
+        // Sync dark mode
+        document.documentElement.classList.toggle('dark', parsed.darkMode);
+        localStorage.setItem('theme', parsed.darkMode ? 'dark' : 'light');
+      } catch (error) {
+        console.error("Error loading settings from localStorage:", error);
+      }
+    }
+  }, []);
+
+  // --- Generic handler to update state and save to localStorage ---
   const handleSettingChange = async (key: keyof UserSettings, value: any) => {
+    // BYPASSED: Save to localStorage instead of Firestore
+    // 1. Update state immediately for instant UI feedback
+    const newSettings = { ...settings, [key]: value };
+    setSettings(newSettings);
+
+    // 2. Handle Dark Mode side-effect
+    if (key === 'darkMode') {
+      document.documentElement.classList.toggle('dark', value);
+      localStorage.setItem('theme', value ? 'dark' : 'light');
+    }
+
+    // 3. Save to localStorage
+    try {
+      localStorage.setItem('appSettings', JSON.stringify(newSettings));
+      
+      // Give a subtle toast on save
+      toast({
+        title: "Setting Saved",
+        description: `${key.replace(/([A-Z])/g, ' $1').charAt(0).toUpperCase() + key.replace(/([A-Z])/g, ' $1').slice(1)} updated.`,
+      });
+    } catch (error: any) {
+      console.error("Error saving setting:", error);
+      toast({
+        title: "Error",
+        description: "Could not save your setting. Please try again.",
+        variant: "destructive",
+      });
+    }
+
+    /* ORIGINAL FIREBASE FIRESTORE CODE - COMMENTED OUT
     if (!user) return; // Not logged in
 
     // 1. Update state immediately for instant UI feedback
@@ -158,6 +210,7 @@ const Settings = () => {
       // Optionally, revert state on error
       // setSettings(prevSettings => ({ ...prevSettings, [key]: !value }));
     }
+    */
   };
   
   // --- Other Handlers ---
@@ -195,6 +248,8 @@ const Settings = () => {
   };
 
   // Show a loading spinner while settings are fetched
+  // COMMENTED OUT: No loading needed for localStorage
+  /*
   if (isLoading || loadingUser) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -202,6 +257,7 @@ const Settings = () => {
       </div>
     );
   }
+  */
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pb-10">

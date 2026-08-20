@@ -27,7 +27,12 @@ const MaintenanceScreen = ({ message }: { message: string }) => (
 );
 
 // This component will wrap your entire application
+// COMMENTED OUT: Service wrapper disabled for development
 export const ServiceWrapper = ({ children }: { children: ReactNode }) => {
+  // BYPASSED: Return children directly without Firebase checks
+  return <>{children}</>;
+
+  /* ORIGINAL FIREBASE SERVICE WRAPPER CODE - COMMENTED OUT
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,4 +82,5 @@ export const ServiceWrapper = ({ children }: { children: ReactNode }) => {
 
   // If loading is done and service is active, show the app
   return <>{children}</>;
+  */
 };
