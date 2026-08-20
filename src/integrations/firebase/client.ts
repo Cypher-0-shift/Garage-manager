@@ -9,12 +9,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAznJUaTZn6IHJ8FaEyuXpvIqrkY4WpSpE",
-  authDomain: "garage-manager-115b0.firebaseapp.com",
-  projectId: "garage-manager-115b0",
-  storageBucket: "garage-manager-115b0.firebasestorage.app", 
-  messagingSenderId: "242966721788",
-  appId: "1:242966721788:web:d339748015ba01a5089379"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
