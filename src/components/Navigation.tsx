@@ -22,8 +22,28 @@ const Navigation = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Updated handleLogout function for Firebase
+  // COMMENTED OUT: Auth logic disabled for development
   const handleLogout = async () => {
+    try {
+      // Clear localStorage auth flag
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("userName");
+      
+      navigate("/auth"); // Redirect to auth page after logout
+      toast({
+        title: "Logged out successfully",
+      });
+    } catch (error: any) {
+      console.error("Logout Error:", error); // Log the error
+      toast({
+        title: "Logout Error",
+        description: error.message || "Failed to log out. Please try again.",
+        variant: "destructive",
+      });
+    }
+
+    /* ORIGINAL FIREBASE AUTH CODE - COMMENTED OUT
     try {
       await signOut(auth); // Use Firebase signOut
       navigate("/auth"); // Redirect to auth page after logout
@@ -38,6 +58,7 @@ const Navigation = () => {
         variant: "destructive",
       });
     }
+    */
   };
 
   const navItems = [

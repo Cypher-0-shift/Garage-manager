@@ -14,6 +14,24 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [user, setUser] = useState<User | null>(null); // State for the Firebase user object
   const [loading, setLoading] = useState(true); // State to track initial authentication check
 
+  // COMMENTED OUT: Firebase auth check disabled for development
+  // Using localStorage to check auth status instead
+  useEffect(() => {
+    // Check localStorage for auth flag
+    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    
+    if (!isAuthenticated) {
+      // If not authenticated, redirect to auth page
+      navigate("/auth", { replace: true });
+    } else {
+      // Set a dummy user object to satisfy the user state
+      setUser({ email: localStorage.getItem("userEmail") || "user@example.com" } as User);
+    }
+    
+    setLoading(false);
+  }, [navigate]);
+
+  /* ORIGINAL FIREBASE AUTH CODE - COMMENTED OUT
   useEffect(() => {
     // Set up Firebase auth state listener
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -29,6 +47,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     // Cleanup function: Unsubscribe from the listener when the component unmounts
     return () => unsubscribe();
   }, [navigate]); // Dependency array includes navigate to ensure it's stable
+  */
 
   // Show loading indicator while the initial authentication check is in progress
   if (loading) {

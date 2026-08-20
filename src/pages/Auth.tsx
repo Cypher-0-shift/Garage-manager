@@ -34,6 +34,8 @@ const Auth = () => {
   // This should be collected after signup and saved to Firestore (e.g., in a 'users' or 'profiles' collection).
 
   // Listen for authentication state changes
+  // COMMENTED OUT: Auth logic disabled for development
+  /*
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
@@ -47,12 +49,42 @@ const Auth = () => {
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [navigate]);
+  */
 
   // Handle Login with Firebase
+  // COMMENTED OUT: Auth logic disabled for development - accept any credentials
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    // BYPASSED AUTHENTICATION - Accept any credentials
+    try {
+      // Simulate a small delay for realism
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Store a dummy auth flag in localStorage
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("userEmail", loginEmail);
+      
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+      });
+      
+      // Navigate to dashboard
+      navigate("/dashboard", { replace: true });
+    } catch (error: any) {
+      console.error("Login failed:", error);
+      toast({
+        title: "Login Failed",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+
+    /* ORIGINAL FIREBASE AUTH CODE - COMMENTED OUT
     try {
       await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
       // onAuthStateChanged will handle navigation
@@ -74,13 +106,44 @@ const Auth = () => {
     } finally {
       setLoading(false);
     }
+    */
   };
 
   // Handle Signup with Firebase
+  // COMMENTED OUT: Auth logic disabled for development - accept any credentials
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    // BYPASSED AUTHENTICATION - Accept any credentials
+    try {
+      // Simulate a small delay for realism
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Store dummy auth flag and user info in localStorage
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("userEmail", signupEmail);
+      localStorage.setItem("userName", fullName);
+      
+      toast({
+        title: "Account Created!",
+        description: "Welcome! Redirecting to dashboard...",
+      });
+      
+      // Navigate to dashboard
+      navigate("/dashboard", { replace: true });
+    } catch (error: any) {
+      console.error("Signup failed:", error);
+      toast({
+        title: "Signup Failed",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+
+    /* ORIGINAL FIREBASE AUTH CODE - COMMENTED OUT
     try {
       // Create the user account
       const userCredential = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
@@ -92,7 +155,7 @@ const Auth = () => {
       // Note: Saving 'garageName' would happen here, writing to a Firestore 'users' or 'profiles' collection:
       // Example (requires Firestore setup):
       // const userDocRef = doc(db, "users", user.uid);
-      // await setDoc(userDocRef, { fullName: fullName, garageName: garageName, email: user.email /* add other fields */ });
+      // await setDoc(userDocRef, { fullName: fullName, garageName: garageName, email: user.email });
 
       toast({
         title: "Account Created!",
@@ -114,9 +177,12 @@ const Auth = () => {
     } finally {
       setLoading(false);
     }
+    */
   };
 
   // Prevent rendering login/signup form if user is already logged in (optional, avoids brief flash)
+  // COMMENTED OUT: Auth logic disabled for development
+  /*
   if (currentUser) {
      // Optionally show a loading indicator or redirect message while navigating
       return (
@@ -126,6 +192,7 @@ const Auth = () => {
           </div>
       );
   }
+  */
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">

@@ -169,7 +169,21 @@ const Settings = () => {
     });
   }
 
+  // COMMENTED OUT: Auth logic disabled for development
   const handleLogout = async () => {
+    try {
+      // Clear localStorage auth flag
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("userName");
+      
+      navigate("/auth");
+      toast({ title: "Logged out successfully" });
+    } catch (error: any) {
+      toast({ title: "Logout Error", description: error.message, variant: "destructive" });
+    }
+
+    /* ORIGINAL FIREBASE AUTH CODE - COMMENTED OUT
     try {
       await signOut(auth);
       navigate("/auth");
@@ -177,6 +191,7 @@ const Settings = () => {
     } catch (error: any) {
       toast({ title: "Logout Error", description: error.message, variant: "destructive" });
     }
+    */
   };
 
   // Show a loading spinner while settings are fetched
